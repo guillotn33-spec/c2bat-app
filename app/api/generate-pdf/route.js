@@ -9,10 +9,10 @@ const SCRIPT_PATH = path.join(process.cwd(), 'Scripts', 'generate_proposition_ht
 
 // Commande Python :
 // - En local (dev) : utilise le venv du projet (.venv)
-// - En production (Railway) : utilise python3 installé globalement par Nixpacks
+// - En production (Railway) : utilise le venv créé dans nixpacks.toml (/opt/venv)
 function getPythonCommand() {
   if (process.env.NODE_ENV === 'production') {
-    return 'python3'
+    return '/opt/venv/bin/python'
   }
   if (process.platform === 'win32') {
     return path.join(process.cwd(), '.venv', 'Scripts', 'python.exe')
