@@ -175,6 +175,23 @@ export default function NouvelleVisite() {
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="max-w-2xl mx-auto space-y-4">
+        {/* Navigation propositions */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap gap-2">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wide self-center mr-2">Propositions</span>
+          <a
+            href="/nouvelle-proposition"
+            className="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-200 transition-colors"
+          >
+            Nouvelle proposition (V1)
+          </a>
+          <a
+            href="/nouvelle-proposition-v2"
+            className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-semibold rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"
+          >
+            Nouvelle proposition (V2 — bêta)
+          </a>
+        </div>
+
         {/* Header */}
         <div className="bg-emerald-600 rounded-2xl p-6 text-white">
           <h1 className="text-2xl font-black">Relevé Technique Terrain</h1>
