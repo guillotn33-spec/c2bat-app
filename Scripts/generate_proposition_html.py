@@ -89,14 +89,22 @@ def compute_derived(d):
         autoconsommee = round(prod * 0.65)
         vendue = prod - autoconsommee
         taux_autonomie = 65
-        economie_annuelle = d["economie_annuelle"]
+        tarif_surplus = d.get("tarif_surplus_edf", 0.10)
+        economie_annuelle = round(autoconsommee * prix_kwh) + round(vendue * tarif_surplus)
         facture_avant = None
         facture_apres = None
         reduction_pct = 70
 
     prix_net = d["prix_ttc"] - d["aide_kap"]
     gain_25ans = economie_annuelle * 25 - prix_net
-    roi_ans = round(prix_net / economie_annuelle) if economie_annuelle else 0
+    roi_ans = 0
+    if economie_annuelle:
+        cumul = 0
+        for yr in range(1, 51):
+            cumul += economie_annuelle
+            if cumul >= prix_net:
+                roi_ans = yr
+                break
 
     return {
         **d,
@@ -362,7 +370,7 @@ def build_html(raw_data):
   </div>
 
   <div class="kicker">PROPOSITION ÉMISE LE {d['date'].upper()}</div>
-  <div class="h1">Votre centrale solaire autonome</div>
+  <div class="h1">Votre centrale solaire avec stockage intelligent</div>
   <div class="h1-sub">Configuration sur-mesure pour <strong>{d['client_nom']}</strong> — {d['client_ville']}</div>
 
   <div class="kpi-row">

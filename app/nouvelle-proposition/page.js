@@ -85,6 +85,21 @@ export default function NouvelleProposition() {
     return computeAideMontant(selectedAide, puissance)
   }, [selectedAide, form.puissance_kwc])
 
+  const prodTheorique = useMemo(() => {
+    const kwc = parseFloat(form.puissance_kwc)
+    const irr = parseFloat(form.irradiation)
+    const perf = parseFloat(form.performance)
+    if (!kwc || !irr || !perf) return null
+    return Math.round(kwc * irr * (perf / 100))
+  }, [form.puissance_kwc, form.irradiation, form.performance])
+
+  const ecartProd = useMemo(() => {
+    if (!prodTheorique || !form.production_annuelle) return null
+    const saisi = parseFloat(form.production_annuelle)
+    if (!saisi) return null
+    return Math.abs(saisi - prodTheorique) / prodTheorique
+  }, [prodTheorique, form.production_annuelle])
+
   // Adresse complète reconstruite pour le géocodage automatique de la carte
   const fullAddress = useMemo(() => {
     return [form.client_adresse, form.client_cp, form.client_ville]
@@ -416,6 +431,21 @@ export default function NouvelleProposition() {
           onChange={(e) => update('production_annuelle', e.target.value)}
           placeholder="3964"
         />
+        {prodTheorique && (
+          <div style={{ fontSize: 12, color: '#6b7280', marginTop: -10, marginBottom: 8 }}>
+            Référence théorique : {prodTheorique.toLocaleString('fr-FR')} kWh/an
+            ({form.puissance_kwc} kWc × {form.irradiation} kWh/kWc × {form.performance}%)
+          </div>
+        )}
+        {ecartProd > 0.15 && (
+          <div style={{
+            fontSize: 12, color: '#dc2626', marginTop: -8, marginBottom: 14,
+            background: '#fef2f2', padding: '8px 12px', borderRadius: 8,
+          }}>
+            ⚠ Écart de {Math.round(ecartProd * 100)}% avec la référence théorique
+            ({prodTheorique.toLocaleString('fr-FR')} kWh/an) — vérifiez la saisie
+          </div>
+        )}
 
         {/* ── EDF optionnel ── */}
         <div style={sectionTitleStyle}>Conso EDF (optionnel)</div>
