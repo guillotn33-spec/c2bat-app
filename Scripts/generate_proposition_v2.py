@@ -398,6 +398,18 @@ def build_html(raw_data):
     sol_score = score_solaire(d)
     sol_label = score_label(sol_score)
 
+    photo_b64 = d.get("photo_fond_base64")
+    if photo_b64:
+        h = COL["bg"].lstrip('#')
+        r, g, b_ = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        bg_overlay = f'rgba({r},{g},{b_},0.90)'
+        page1_bg = (
+            f'style="background-image:linear-gradient({bg_overlay},{bg_overlay}),url({photo_b64});'
+            f'background-size:auto,cover;background-position:0 0,center"'
+        )
+    else:
+        page1_bg = ''
+
     roof_img = d.get("roof_map_base64")
     if roof_img:
         roof_html = f'<img src="{roof_img}" style="width:100%;height:180px;object-fit:cover;border-radius:10px;border:1px solid {COL["border"]}" alt="Carte toiture"/>'
@@ -451,7 +463,7 @@ def build_html(raw_data):
 <body>
 
 <!-- ═══ PAGE 1 : HERO ═══ -->
-<div class="page">
+<div class="page" {page1_bg}>
   {header(d, "ÉTUDE SOLAIRE ACTIVE")}
 
   <div class="kicker">PROPOSITION ÉMISE LE {d['date'].upper()}</div>
